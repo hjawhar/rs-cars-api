@@ -1,4 +1,4 @@
-use actix_web::{get, HttpResponse, Responder};
+use actix_web::{get, post, HttpResponse, Responder};
 use serde_json;
 
 use crate::{data::ALL_CARS, models::Car};
@@ -9,32 +9,23 @@ pub async fn hello() -> impl Responder {
 }
 
 #[get("/cars")]
-pub async fn cars() -> impl Responder {
-    let car1 = Car {
-        name: String::from("BMW"),
-        model: String::from("1995"),
-    };
-    let car2 = Car {
-        name: String::from("BMW"),
-        model: String::from("1995"),
-    };
-
-    let car3 = Car {
-        name: String::from("BMW"),
-        model: String::from("1995"),
-    };
-    let car4 = Car {
-        name: String::from("BMW"),
-        model: String::from("1995"),
-    };
-
+pub async fn get_cars() -> impl Responder {
     unsafe {
-        ALL_CARS.push(car1);
-        ALL_CARS.push(car2);
-        ALL_CARS.push(car3);
-        ALL_CARS.push(car4);
         let serialized = serde_json::to_string(&ALL_CARS).unwrap();
 
+        HttpResponse::Ok().body(serialized)
+    }
+}
+
+#[post("/cars")]
+pub async fn post_cars() -> impl Responder {
+    unsafe {
+        let car1 = Car {
+            name: String::from("BMW"),
+            model: String::from("1995"),
+        };
+        ALL_CARS.push(car1);
+        let serialized = serde_json::to_string(&ALL_CARS).unwrap();
         HttpResponse::Ok().body(serialized)
     }
 }
