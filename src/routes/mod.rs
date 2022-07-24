@@ -1,11 +1,7 @@
 use actix_web::{get, HttpResponse, Responder};
-use serde::{Deserialize, Serialize};
 use serde_json;
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Car {
-    name: String,
-    model: String,
-}
+
+use crate::models::Car;
 
 #[get("/")]
 pub async fn hello() -> impl Responder {
