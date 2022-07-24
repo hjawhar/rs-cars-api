@@ -1,0 +1,24 @@
+version: "2"
+services:
+  node:
+    image: "node:16"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8081"
+    command: "node -v"
+
+  db:
+    image: postgres
+    # restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    container_name: postgres_db
+    # ports:
+    #   - "5432:5432"
