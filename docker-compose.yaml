@@ -14,13 +14,13 @@ services:
       - "8080"
     command: "cargo run"
 
-  # db:
-  #   image: postgres
-  #   # restart: always
-  #   environment:
-  #     POSTGRES_DB: postgres
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #   container_name: postgres_db
-  #   # ports:
-  #   #   - "5432:5432"
+  db:
+    image: postgres
+    # restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
