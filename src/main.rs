@@ -13,7 +13,7 @@ async fn main() -> std::io::Result<()> {
                 .service(crate::routes::post_cars),
         )
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("167.172.180.249", 8080))?
     .run()
     .await
 }
