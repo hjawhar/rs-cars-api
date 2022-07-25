@@ -9,9 +9,9 @@ services:
     volumes:
       - ./:/home/node/app
     ports:
-      - "8080:8080"
+      - "8080:3000"
     expose:
-      - "8080"
+      - "3000"
     command: "cargo run"
 
   # db:
