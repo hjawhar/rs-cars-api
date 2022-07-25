@@ -6,7 +6,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 
-use crate::models::{Car, CarPayload, Garage, ServerError, ServerStatus};
+use crate::models::{Car, CarPayload, Garage, ServerStatus};
 
 #[get("/")]
 pub async fn index() -> impl Responder {
@@ -16,8 +16,8 @@ pub async fn index() -> impl Responder {
 
 #[get("/cars")]
 pub async fn get_cars(data: web::Data<Arc<Mutex<Garage>>>) -> impl Responder {
-    let f = data.lock().unwrap();
-    HttpResponse::Ok().json(&f.cars)
+    let lock_guard = data.lock().unwrap();
+    HttpResponse::Ok().json(&lock_guard.cars)
 }
 
 #[post("/cars")]
@@ -25,7 +25,8 @@ pub async fn post_cars(
     info: Json<CarPayload>,
     data: web::Data<Arc<Mutex<Garage>>>,
 ) -> impl Responder {
-    let mut f = data.lock().unwrap();
+    let mut lock_guard = data.lock().unwrap();
+
     // println!("{} {}", info.name, info.model);
     // if info.name.trim().is_empty() {
     //     let server_error = ServerError::new("Name not found");
@@ -45,6 +46,6 @@ pub async fn post_cars(
         model: String::from(&info.model),
     };
 
-    f.add(car1);
-    HttpResponse::Ok().json(&f.cars)
+    lock_guard.add(car1);
+    HttpResponse::Ok().json(&lock_guard.cars)
 }
