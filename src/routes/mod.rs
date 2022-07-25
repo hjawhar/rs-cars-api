@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use actix_web::{
     get, post,
@@ -6,7 +6,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 
-use crate::models::{Car, CarPayload, Garage, ServerStatus};
+use crate::models::{Car, CarPayload, GlobalData, ServerStatus};
 
 #[get("/")]
 pub async fn index() -> impl Responder {
@@ -15,15 +15,15 @@ pub async fn index() -> impl Responder {
 }
 
 #[get("/cars")]
-pub async fn get_cars(data: web::Data<Mutex<Garage>>) -> impl Responder {
+pub async fn get_cars(data: web::Data<Mutex<GlobalData>>) -> impl Responder {
     let lock_guard = data.lock().unwrap();
-    HttpResponse::Ok().json(&lock_guard.cars)
+    HttpResponse::Ok().json(&lock_guard.garage.cars)
 }
 
 #[post("/cars")]
 pub async fn post_cars(
     info: Json<CarPayload>,
-    data: web::Data<Mutex<Garage>>,
+    data: web::Data<Mutex<GlobalData>>,
 ) -> impl Responder {
     let mut lock_guard = data.lock().unwrap();
 
@@ -46,6 +46,6 @@ pub async fn post_cars(
         model: String::from(&info.model),
     };
 
-    lock_guard.add(car1);
-    HttpResponse::Ok().json(&lock_guard.cars)
+    lock_guard.garage.add(car1);
+    HttpResponse::Ok().json(&lock_guard.garage.cars)
 }

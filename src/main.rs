@@ -1,18 +1,34 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use actix_web::{
     web::{scope, Data},
     App, HttpServer,
 };
-use models::Garage;
+use db::establish_connection;
+use models::{Garage, GlobalData};
+use sqlx::{Pool, Postgres};
+mod db;
 mod models;
 mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    
-    //Data internally uses an Arc already, don't wrap it with an externa; Arc to avoid double Arcs.
-    let data = Data::new(Mutex::new(Garage::new()));
+    let _db_connection = establish_connection().await;
+    let pool: Pool<Postgres>;
+    match _db_connection {
+        Ok(_pool) => {
+            pool = _pool;
+            println!("Successfully connected to DB")
+        }
+        Err(error) => panic!("Problem opening the file: {:?}", error),
+    };
+
+    let global_data = GlobalData {
+        garage: Garage::new(),
+        db: pool,
+    };
+
+    let data = Data::new(Mutex::new(global_data));
 
     HttpServer::new(move || {
         App::new().app_data(data.clone()).service(
