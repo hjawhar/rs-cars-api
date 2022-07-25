@@ -1,24 +1,24 @@
-version: "2"
+version: "1"
 services:
-  node:
-    image: "node:16"
-    user: "node"
+  web:
+    image: "rust:1.47"
+    user: "ukf"
     working_dir: /home/node/app
     environment:
-      - NODE_ENV=production
+      - user=UKF
     volumes:
       - ./:/home/node/app
     expose:
       - "8081"
-    command: "node -v"
+    command: "cargo run"
 
-  db:
-    image: postgres
-    # restart: always
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    container_name: postgres_db
-    # ports:
-    #   - "5432:5432"
+  # db:
+  #   image: postgres
+  #   # restart: always
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   container_name: postgres_db
+  #   # ports:
+  #   #   - "5432:5432"
