@@ -15,7 +15,7 @@ pub async fn index() -> impl Responder {
 }
 
 #[get("/cars")]
-pub async fn get_cars(data: web::Data<Arc<Mutex<Garage>>>) -> impl Responder {
+pub async fn get_cars(data: web::Data<Mutex<Garage>>) -> impl Responder {
     let lock_guard = data.lock().unwrap();
     HttpResponse::Ok().json(&lock_guard.cars)
 }
@@ -23,7 +23,7 @@ pub async fn get_cars(data: web::Data<Arc<Mutex<Garage>>>) -> impl Responder {
 #[post("/cars")]
 pub async fn post_cars(
     info: Json<CarPayload>,
-    data: web::Data<Arc<Mutex<Garage>>>,
+    data: web::Data<Mutex<Garage>>,
 ) -> impl Responder {
     let mut lock_guard = data.lock().unwrap();
 
