@@ -16,7 +16,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new().app_data(data.clone()).service(
             scope("/api")
-                .service(crate::routes::hello)
+                .service(crate::routes::index)
                 .service(crate::routes::get_cars)
                 .service(crate::routes::post_cars),
         )
