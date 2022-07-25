@@ -10,8 +10,9 @@ mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let arc = Arc::new(Mutex::new(Garage::new()));
-    let data = Data::new(arc);
+    
+    //Data internally uses an Arc already, don't wrap it with an externa; Arc to avoid double Arcs.
+    let data = Data::new(Mutex::new(Garage::new()));
 
     HttpServer::new(move || {
         App::new().app_data(data.clone()).service(
