@@ -1,12 +1,20 @@
-use actix_web::{web::scope, App, HttpServer};
-mod data;
+use std::sync::{Arc, Mutex};
+
+use actix_web::{
+    web::{scope, Data},
+    App, HttpServer,
+};
+use models::Garage;
 mod models;
 mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new().service(
+    let arc = Arc::new(Mutex::new(Garage::new()));
+    let data = Data::new(arc);
+
+    HttpServer::new(move || {
+        App::new().app_data(data.clone()).service(
             scope("/api")
                 .service(crate::routes::hello)
                 .service(crate::routes::get_cars)
