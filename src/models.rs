@@ -7,6 +7,7 @@ use crate::*;
 use diesel::{self, prelude::*};
 use schema::cars;
 use serde::{Deserialize, Serialize};
+use validator::{Validate, ValidationError};
 
 #[derive(Deserialize, Serialize, Queryable, Debug)]
 pub struct Car {
@@ -15,9 +16,11 @@ pub struct Car {
     pub model: String,
 }
 
-#[derive(Deserialize, Serialize, Insertable, Debug)]
+#[derive(Deserialize, Serialize, Insertable, Validate, Debug)]
 #[table_name = "cars"]
 pub struct NewCar {
+    #[validate(required,length(min = 1, max = 100))]
     pub name: Option<String>,
+    #[validate(required,length(min = 1, max = 100))]
     pub model: Option<String>,
 }
