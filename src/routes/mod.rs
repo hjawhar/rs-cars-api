@@ -32,12 +32,20 @@ pub async fn post_cars(info: Json<NewCar>, data: web::Data<Mutex<PgConnection>>)
 
     match &info.name {
         Some(car_name_value) => car_name = car_name_value.to_string(),
-        None => return HttpResponse::Ok().body("No car name specified"),
+        None => return HttpResponse::BadRequest().body("No car name specified"),
     }
 
     match &info.model {
         Some(car_model_value) => car_model = car_model_value.to_string(),
-        None => return HttpResponse::Ok().body("No car model specified"),
+        None => return HttpResponse::BadRequest().body("No car model specified"),
+    }
+
+    if car_name.len() > 100 {
+        return HttpResponse::BadRequest().body("Car name cannot exceed 100 characters");
+    }
+
+    if car_model.len() > 100 {
+        return HttpResponse::BadRequest().body("Car model cannot exceed 100 characters");
     }
 
     insert_into(cars)
