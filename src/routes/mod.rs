@@ -27,11 +27,23 @@ pub async fn get_cars(data: web::Data<Mutex<PgConnection>>) -> impl Responder {
 #[post("/cars")]
 pub async fn post_cars(info: Json<NewCar>, data: web::Data<Mutex<PgConnection>>) -> impl Responder {
     let lock_guard = data.lock().unwrap();
+    let car_name: String;
+    let car_model: String;
+
+    match &info.name {
+        Some(car_name_value) => car_name = car_name_value.to_string(),
+        None => return HttpResponse::Ok().body("No car name specified"),
+    }
+
+    match &info.model {
+        Some(car_model_value) => car_model = car_model_value.to_string(),
+        None => return HttpResponse::Ok().body("No car model specified"),
+    }
 
     insert_into(cars)
-        .values((name.eq(&info.name), model.eq(&info.model)))
+        .values((name.eq(&car_name), model.eq(&car_model)))
         .execute(&*lock_guard)
         .unwrap();
 
-    HttpResponse::Ok()
+    HttpResponse::Ok().body("Successfully added car")
 }

@@ -6,7 +6,7 @@
 use crate::*;
 use diesel::{self, prelude::*};
 use schema::cars;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Queryable, Debug)]
 pub struct Car {
@@ -18,6 +18,6 @@ pub struct Car {
 #[derive(Deserialize, Serialize, Insertable, Debug)]
 #[table_name = "cars"]
 pub struct NewCar {
-    pub name: String,
-    pub model:String,
+    pub name: Option<String>,
+    pub model: Option<String>,
 }
